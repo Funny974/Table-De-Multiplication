@@ -1,0 +1,19 @@
+COMMENT OBTENIR TON APK (sans rien installer)
+
+1. Cree un compte gratuit sur https://github.com
+2. Clique sur "+" en haut a droite > "New repository"
+   Nom : tables-app   |   Public   |   puis "Create repository"
+3. Sur la page du depot, clique sur "uploading an existing file"
+4. Glisse TOUT le contenu de ce dossier (www, assets, .github,
+   package.json, capacitor.config.json, .gitignore) dans la page,
+   puis clique sur "Commit changes".
+   Important : le dossier ".github" doit bien etre envoye.
+5. Va dans l'onglet "Actions". Le build demarre tout seul
+   (sinon : "Build APK" > "Run workflow").
+6. Apres 4 a 6 minutes, clique sur le build termine (pastille verte),
+   descends jusqu'a "Artifacts" et telecharge "tables-apk".
+7. Dezippe : tu obtiens app-debug.apk. Envoie-le sur ton telephone
+   et installe-le (autorise l'installation d'applis inconnues).
+
+POUR METTRE A JOUR : remplace www/index.html dans le depot GitHub
+(bouton "Edit" ou "Upload files"), le build se relance seul.

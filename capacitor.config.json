@@ -1,0 +1,7 @@
+{
+  "appId": "com.tables974.quiz",
+  "appName": "Tables",
+  "webDir": "www",
+  "backgroundColor": "#0d0015",
+  "server": { "androidScheme": "https" }
+}
