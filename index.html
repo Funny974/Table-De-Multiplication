@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tables de Multiplication ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #0d0015;
+    --bg2: #1a0030;
+    --violet: #7c3aed;
+    --violet-light: #a855f7;
+    --blue: #3b82f6;
+    --pink: #ec4899;
+    --rose: #f472b6;
+    --lavender: #c4b5fd;
+    --white: #f8f4ff;
+    --card-bg: rgba(255,255,255,0.06);
+    --card-border: rgba(196,181,253,0.18);
+    --glass: rgba(124,58,237,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg1);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── ANIMATED BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,58,237,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 20%, rgba(236,72,153,0.28) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 50% 90%, rgba(59,130,246,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 70%, rgba(168,85,247,0.2) 0%, transparent 50%);
+    z-index: 0;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0%   { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+
+  /* floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.18;
+    animation: float 12s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb1 { width: 400px; height: 400px; background: var(--violet); top: -100px; left: -100px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: var(--pink); bottom: -80px; right: -80px; animation-delay: -4s; }
+  .orb3 { width: 250px; height: 250px; background: var(--blue); top: 40%; left: 60%; animation-delay: -8s; }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33%       { transform: translate(30px,-20px) scale(1.05); }
+    66%       { transform: translate(-20px, 30px) scale(0.95); }
+  }
+
+  /* ── LAYOUT ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; width: 100%; max-width: 860px; animation: fadeIn .45s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── HEADER ── */
+  .hero { text-align: center; padding: 2.5rem 0 2rem; }
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(124,58,237,.3), rgba(236,72,153,.25));
+    border: 1px solid rgba(196,181,253,.3);
+    border-radius: 100px;
+    padding: .4rem 1.2rem;
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--lavender);
+    margin-bottom: 1.2rem;
+    backdrop-filter: blur(6px);
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 800;
+    background: linear-gradient(120deg, var(--lavender), var(--rose), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .hero p { color: rgba(248,244,255,.55); font-size: 1.05rem; margin-top: .8rem; }
+
+  /* ── CARDS / GLASS ── */
+  .glass-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── MENU BUTTONS ── */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; max-width: 520px; margin: 2rem auto 0; }
+  @media(max-width:480px){ .menu-grid { grid-template-columns: 1fr; } }
+
+  .menu-btn {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+    transition: transform .2s, box-shadow .2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+    text-align: center;
+  }
+  .menu-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity .3s;
+    background: rgba(255,255,255,.1);
+  }
+  .menu-btn:hover::before { opacity: 1; }
+  .menu-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
+  .menu-btn:active { transform: translateY(0); }
+  .menu-btn .icon { font-size: 2.4rem; }
+  .menu-btn .sub { font-size: .78rem; font-family: 'DM Sans', sans-serif; font-weight: 400; opacity: .75; }
+
+  .btn-train  { background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899); box-shadow: 0 6px 30px rgba(124,58,237,.4); }
+  .btn-tables { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); box-shadow: 0 6px 30px rgba(59,130,246,.4); }
+  .btn-reviser{ background: linear-gradient(135deg, #0ea5e9, #6366f1, #a855f7); box-shadow: 0 6px 30px rgba(99,102,241,.4); }
+  .btn-sequential { background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6); box-shadow: 0 6px 30px rgba(16,185,129,.4); }
+  .btn-squares     { background: linear-gradient(135deg, #f59e0b, #ef4444, #a855f7); box-shadow: 0 6px 30px rgba(245,158,11,.4); }
+  .btn-seq-squares { background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981); box-shadow: 0 6px 30px rgba(239,68,68,.4); }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--lavender), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  /* ── LABEL ── */
+  .field-label {
+    font-size: .8rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lavender);
+    margin-bottom: .6rem;
+    display: block;
+  }
+
+  /* ── TABLE SELECTOR ── */
+  .table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+    gap: .5rem;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: .4rem;
+  }
+  .table-grid::-webkit-scrollbar { width: 4px; }
+  .table-grid::-webkit-scrollbar-track { background: rgba(255,255,255,.05); border-radius: 4px; }
+  .table-grid::-webkit-scrollbar-thumb { background: var(--violet-light); border-radius: 4px; }
+
+  .tbl-btn {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(196,181,253,.15);
+    border-radius: 12px;
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: .9rem;
+    padding: .55rem .2rem;
+    cursor: pointer;
+    transition: all .18s;
+    text-align: center;
+  }
+  .tbl-btn:hover { background: rgba(168,85,247,.25); border-color: rgba(168,85,247,.5); }
+  .tbl-btn.selected {
+    background: linear-gradient(135deg, rgba(124,58,237,.7), rgba(236,72,153,.5));
+    border-color: rgba(196,181,253,.6);
+    box-shadow: 0 0 12px rgba(168,85,247,.4);
+  }
+
+  .select-controls { display: flex; gap: .6rem; margin-bottom: .8rem; flex-wrap: wrap; }
+  .mini-btn {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(196,181,253,.2);
+    border-radius: 8px;
+    color: var(--lavender);
+    font-size: .78rem;
+    padding: .3rem .8rem;
+    cursor: pointer;
+    transition: all .18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .mini-btn:hover { background: rgba(168,85,247,.2); color: #fff; }
+
+  /* ── SLIDERS / INPUTS ── */
+  .config-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media(max-width:480px){ .config-row { grid-template-columns: 1fr; } }
+
+  .config-item { display: flex; flex-direction: column; gap: .5rem; }
+
+  .range-wrap { position: relative; }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--violet), var(--pink));
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet-light), var(--rose));
+    box-shadow: 0 0 10px rgba(168,85,247,.6);
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  .range-val {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(124,58,237,.4), rgba(236,72,153,.3));
+    border: 1px solid rgba(196,181,253,.3);
+    border-radius: 8px;
+    padding: .25rem .7rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--lavender);
+    min-width: 52px;
+    text-align: center;
+  }
+
+  /* ── PRIMARY BUTTON ── */
+  .btn-primary {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 1.8rem auto 0;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--violet), var(--violet-light), var(--pink));
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 6px 30px rgba(124,58,237,.45);
+    letter-spacing: .03em;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(124,58,237,.6); }
+  .btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(196,181,253,.2);
+    border-radius: 12px;
+    color: var(--lavender);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    padding: .5rem 1.1rem;
+    cursor: pointer;
+    transition: all .18s;
+    margin-bottom: 1.5rem;
+  }
+  .btn-back:hover { background: rgba(124,58,237,.25); color: #fff; }
+
+  /* ── QUIZ SCREEN ── */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .quiz-stat {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: .5rem 1.1rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--lavender);
+    backdrop-filter: blur(8px);
+    min-width: 80px;
+    text-align: center;
+  }
+  .quiz-stat span { display: block; font-size: .68rem; font-family: 'DM Sans', sans-serif; font-weight: 400; opacity: .65; margin-bottom: .1rem; text-transform: uppercase; letter-spacing: .05em; }
+
+  .timer-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,.1);
+    border-radius: 6px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .timer-bar {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--blue), var(--violet), var(--pink));
+    transition: width .9s linear;
+  }
+
+  .question-card {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .question-num { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(196,181,253,.55); margin-bottom: .8rem; }
+  .question-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(120deg, #fff, var(--lavender), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -.02em;
+  }
+
+  .answer-zone { display: flex; gap: .8rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+  #answer-input {
+    background: rgba(255,255,255,.08);
+    border: 2px solid rgba(196,181,253,.3);
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    padding: .6rem 1.2rem;
+    width: 160px;
+    text-align: center;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    -moz-appearance: textfield;
+  }
+  #answer-input::-webkit-outer-spin-button,
+  #answer-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  #answer-input:focus {
+    border-color: var(--violet-light);
+    box-shadow: 0 0 0 4px rgba(168,85,247,.2);
+  }
+  #answer-input.correct { border-color: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,.2); }
+  #answer-input.wrong   { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(236,72,153,.25); animation: shake .3s; }
+
+  @keyframes shake {
+    0%,100%{ transform:translateX(0); }
+    20%    { transform:translateX(-8px); }
+    60%    { transform:translateX(8px); }
+  }
+
+  .btn-validate {
+    padding: .7rem 1.8rem;
+    background: linear-gradient(135deg, var(--violet), var(--pink));
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,.4);
+  }
+  .btn-validate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,.55); }
+
+  .feedback {
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    min-height: 1.8rem;
+    margin-top: .8rem;
+    transition: opacity .3s;
+  }
+  .feedback.ok  { color: #4ade80; }
+  .feedback.bad { color: var(--rose); }
+
+  /* ── RESULTS ── */
+  .result-center { text-align: center; padding: 1.5rem 0; }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(124,58,237,.3), rgba(236,72,153,.3));
+    border: 3px solid rgba(196,181,253,.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 40px rgba(168,85,247,.35);
+  }
+  .score-circle .big {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    background: linear-gradient(120deg, var(--lavender), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .score-circle .small { font-size: .75rem; color: rgba(196,181,253,.6); letter-spacing: .06em; margin-top: .2rem; }
+  .result-msg { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--lavender); margin-bottom: .4rem; }
+  .result-sub { color: rgba(248,244,255,.5); font-size: .9rem; }
+
+  .result-log {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: .3rem;
+  }
+  .log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,.05);
+    border-radius: 10px;
+    padding: .5rem 1rem;
+    font-size: .88rem;
+  }
+  .log-item.ok2  { border-left: 3px solid #4ade80; }
+  .log-item.bad2 { border-left: 3px solid var(--rose); }
+  .log-check { font-size: 1rem; }
+
+  /* ── TABLES VIEW ── */
+  .tables-search {
+    width: 100%;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(196,181,253,.2);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: .7rem 1.1rem;
+    outline: none;
+    margin-bottom: 1.2rem;
+    transition: border-color .2s;
+  }
+  .tables-search:focus { border-color: var(--violet-light); }
+  .tables-search::placeholder { color: rgba(196,181,253,.4); }
+
+  .tables-nav { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .nav-btn {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(196,181,253,.15);
+    border-radius: 8px;
+    color: rgba(196,181,253,.7);
+    font-size: .78rem;
+    padding: .3rem .65rem;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-btn:hover, .nav-btn.active-nav { background: rgba(124,58,237,.35); color: #fff; border-color: rgba(168,85,247,.4); }
+
+  /* ── ACCORDION ── */
+  .table-section { margin-bottom: .6rem; }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(196,181,253,.15);
+    border-radius: 14px;
+    padding: .85rem 1.2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s, border-color .2s, box-shadow .2s;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--lavender);
+    gap: .8rem;
+  }
+  .accordion-header:hover {
+    background: rgba(124,58,237,.22);
+    border-color: rgba(168,85,247,.4);
+    box-shadow: 0 0 18px rgba(124,58,237,.2);
+  }
+  .accordion-header.open {
+    background: linear-gradient(135deg, rgba(124,58,237,.28), rgba(236,72,153,.18));
+    border-color: rgba(196,181,253,.45);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 4px 20px rgba(124,58,237,.25);
+  }
+  .accordion-header .acc-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet), var(--pink));
+    flex-shrink: 0;
+  }
+  .accordion-header .acc-label { flex: 1; }
+  .accordion-header .acc-badge {
+    font-size: .7rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    background: rgba(196,181,253,.12);
+    border: 1px solid rgba(196,181,253,.2);
+    border-radius: 20px;
+    padding: .15rem .6rem;
+    color: rgba(196,181,253,.65);
+  }
+  .accordion-header .acc-arrow {
+    font-size: .85rem;
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    color: rgba(196,181,253,.6);
+    flex-shrink: 0;
+  }
+  .accordion-header.open .acc-arrow { transform: rotate(180deg); color: var(--lavender); }
+
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .45s cubic-bezier(.4,0,.2,1), padding .3s;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(196,181,253,.15);
+    border-top: none;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+  .accordion-body.open { max-height: 2000px; }
+
+  .mult-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: .4rem;
+    padding: 1rem;
+  }
+  .mult-item {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(196,181,253,.1);
+    border-radius: 9px;
+    padding: .38rem .7rem;
+    font-size: .85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background .15s;
+  }
+  .mult-item:hover { background: rgba(124,58,237,.2); }
+  .mult-item .op   { color: rgba(248,244,255,.7); }
+  .mult-item .res  { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--lavender); }
+
+  .tables-container { max-height: 640px; overflow-y: auto; padding-right: .4rem; }
+  .tables-container::-webkit-scrollbar { width: 4px; }
+  .tables-container::-webkit-scrollbar-thumb { background: var(--violet-light); border-radius: 4px; }
+
+  /* ── NO SELECT ── */
+  .no-select-msg { text-align: center; color: rgba(196,181,253,.55); padding: 1.5rem; font-size: .9rem; }
+
+  /* ── PROGRESS ── */
+  .progress-dots { display: flex; gap: .35rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.15); transition: background .3s; }
+  .dot.done-ok  { background: #4ade80; }
+  .dot.done-bad { background: var(--rose); }
+  .dot.current  { background: var(--violet-light); animation: pulse .8s ease infinite alternate; }
+  @keyframes pulse { from { box-shadow: 0 0 0 0 rgba(168,85,247,.6); } to { box-shadow: 0 0 0 5px rgba(168,85,247,0); } }
+  /* ── STATS ── */
+  .btn-stats { background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6); box-shadow: 0 6px 30px rgba(245,158,11,.35); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    padding: 1.3rem 1rem;
+    text-align: center;
+    transition: transform .2s;
+  }
+  .stat-card:hover { transform: translateY(-3px); }
+  .stat-card .stat-icon { font-size: 1.8rem; margin-bottom: .4rem; }
+  .stat-card .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    background: linear-gradient(120deg, var(--lavender), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .stat-card .stat-lbl { font-size: .72rem; letter-spacing: .07em; text-transform: uppercase; color: rgba(196,181,253,.55); margin-top: .35rem; }
+
+  .mode-bar-row { display: flex; flex-direction: column; gap: .6rem; }
+  .mode-bar-item { display: flex; flex-direction: column; gap: .3rem; }
+  .mode-bar-label { display: flex; justify-content: space-between; font-size: .82rem; color: rgba(248,244,255,.7); }
+  .mode-bar-track { height: 10px; background: rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; }
+  .mode-bar-fill { height: 100%; border-radius: 10px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(196,181,253,.1);
+    border-radius: 12px;
+    padding: .65rem 1rem;
+    margin-bottom: .45rem;
+    font-size: .85rem;
+  }
+  .history-item .h-mode {
+    background: linear-gradient(135deg, rgba(124,58,237,.4), rgba(236,72,153,.3));
+    border-radius: 8px;
+    padding: .2rem .6rem;
+    font-family: 'Syne', sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--lavender);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .history-item .h-score { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); flex: 1; }
+  .history-item .h-pct { font-weight: 600; }
+  .history-item .h-pct.good { color: #4ade80; }
+  .history-item .h-pct.mid  { color: #fbbf24; }
+  .history-item .h-pct.bad  { color: var(--rose); }
+  .history-item .h-time { color: rgba(196,181,253,.55); font-size: .78rem; white-space: nowrap; }
+  .no-stats { text-align:center; color:rgba(196,181,253,.45); padding:2rem; font-size:.9rem; }
+  .sort-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .sort-label { font-size: .75rem; color: rgba(196,181,253,.5); letter-spacing: .06em; text-transform: uppercase; margin-right: .2rem; white-space: nowrap; }
+  .sort-btn {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(196,181,253,.15);
+    border-radius: 20px;
+    color: rgba(196,181,253,.65);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .75rem;
+    padding: .3rem .8rem;
+    cursor: pointer;
+    transition: all .18s;
+    white-space: nowrap;
+  }
+  .sort-btn:hover { background: rgba(124,58,237,.25); color: #fff; border-color: rgba(168,85,247,.4); }
+  .sort-btn.sort-active {
+    background: linear-gradient(135deg, rgba(124,58,237,.5), rgba(236,72,153,.35));
+    border-color: rgba(196,181,253,.5);
+    color: #fff;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="wrapper">
+
+  <!-- ═══════════ MENU ═══════════ -->
+  <div id="screen-menu" class="screen active">
+    <div class="hero">
+      <div class="hero-badge">✦ Mathématiques ✦</div>
+      <h1>Tables de<br>Multiplication</h1>
+      <p>Maîtrise les tables de 0 à 100</p>
+    </div>
+    <div class="menu-grid" style="grid-template-columns:1fr 1fr 1fr;max-width:780px">
+      <button class="menu-btn btn-train" onclick="showScreen('screen-train-menu')">
+        <span class="icon">🎯</span>
+        S'entraîner
+        <span class="sub">Quiz personnalisé</span>
+      </button>
+      <button class="menu-btn btn-tables" onclick="showScreen('screen-tables')">
+        <span class="icon">📖</span>
+        Tables
+        <span class="sub">De 0 à 100</span>
+      </button>
+      <button class="menu-btn btn-stats" onclick="showStatsScreen()">
+        <span class="icon">📊</span>
+        Statistiques
+        <span class="sub">Ton historique & progression</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ SOUS-MENU ENTRAÎNER ═══════════ -->
+  <div id="screen-train-menu" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">S'entraîner</h1>
+      <p>Choisis ton mode d'entraînement</p>
+    </div>
+    <div class="menu-grid" style="max-width:860px;grid-template-columns:1fr 1fr">
+      <button class="menu-btn btn-train" onclick="showScreen('screen-config')">
+        <span class="icon">&#127919;</span>
+        Configurer le quiz
+        <span class="sub">Tables, timer et nombre de calculs au choix</span>
+      </button>
+      <button class="menu-btn btn-reviser" onclick="showScreen('screen-reviser')">
+        <span class="icon">&#128221;</span>
+        Réviser
+        <span class="sub">Tes tables multipliées par tous les nombres inférieurs</span>
+      </button>
+      <button class="menu-btn btn-sequential" onclick="showScreen('screen-sequential')">
+        <span class="icon">&#128200;</span>
+        Table par table
+        <span class="sub">Récite une table dans l'ordre, de 2 jusqu'au bout</span>
+      </button>
+      <button class="menu-btn btn-squares" onclick="showScreen('screen-squares')">
+        <span class="icon">&#x1F7E3;</span>
+        Carrés
+        <span class="sub">Entraîne-toi sur les nombres au carré de 1 à 100</span>
+      </button>
+      <button class="menu-btn btn-seq-squares" onclick="showScreen('screen-seq-squares')">
+        <span class="icon">🔢</span>
+        Carré par carré
+        <span class="sub">Récite les carrés d'un nombre dans l'ordre</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ TABLE PAR TABLE CONFIG ═══════════ -->
+  <div id="screen-sequential" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-train-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Table par table</h1>
+      <p>Choisis une table — le quiz te la fait réciter dans l'ordre</p>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Choisir la table</div>
+      <span class="field-label">Sélectionne une seule table :</span>
+      <div class="table-grid" id="table-selector-seq"></div>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Paramètres</div>
+      <div class="config-row">
+        <div class="config-item">
+          <span class="field-label">Aller jusqu'à</span>
+          <div class="range-wrap">
+            <input type="range" id="seq-max" min="2" max="100" value="10" oninput="updateVal('seq-max','val-seq-max')">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-seq-max">10</span></div>
+        </div>
+        <div class="config-item">
+          <span class="field-label">Temps par question (sec)</span>
+          <div class="range-wrap">
+            <input type="range" id="timer-sec-seq" min="0" max="60" value="0" oninput="updateVal('timer-sec-seq','val-timer-seq',true)">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-timer-seq">&#8734;</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" id="start-btn-seq" onclick="startSequential()" disabled>Lancer ✦</button>
+  </div>
+
+  <!-- ═══════════ CARRÉS CONFIG ═══════════ -->
+  <div id="screen-squares" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-train-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Nombres au Carré</h1>
+      <p>Sélectionne les nombres dont tu veux réviser le carré</p>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Choisir les nombres</div>
+      <div class="select-controls">
+        <button class="mini-btn" onclick="selectRangeSq(1,10)">1 – 10</button>
+        <button class="mini-btn" onclick="selectRangeSq(1,20)">1 – 20</button>
+        <button class="mini-btn" onclick="selectRangeSq(1,50)">1 – 50</button>
+        <button class="mini-btn" onclick="selectRangeSq(1,100)">Tous</button>
+        <button class="mini-btn" onclick="clearSelectionSq()">Effacer</button>
+      </div>
+      <span class="field-label">Sélectionne un ou plusieurs nombres :</span>
+      <div class="table-grid" id="table-selector-sq"></div>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Paramètres</div>
+      <div class="config-row">
+        <div class="config-item">
+          <span class="field-label">Nombre de questions</span>
+          <div class="range-wrap">
+            <input type="range" id="calc-count-sq" min="5" max="50" value="10" oninput="updateVal('calc-count-sq','val-calc-sq')">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-calc-sq">10</span></div>
+        </div>
+        <div class="config-item">
+          <span class="field-label">Temps par question (sec)</span>
+          <div class="range-wrap">
+            <input type="range" id="timer-sec-sq" min="0" max="60" value="0" oninput="updateVal('timer-sec-sq','val-timer-sq',true)">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-timer-sq">&#8734;</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" id="start-btn-sq" onclick="startSquares()" disabled>Lancer ✦</button>
+  </div>
+
+  <!-- ═══════════ CARRÉ PAR CARRÉ CONFIG ═══════════ -->
+  <div id="screen-seq-squares" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-train-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Carré par carré</h1>
+      <p>Choisis un nombre — le quiz te demande 1², 2², 3²… jusqu'à ce nombre</p>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Choisir le nombre de départ</div>
+      <span class="field-label">Sélectionne un seul nombre (le quiz ira de 1² jusqu'à ce nombre²) :</span>
+      <div class="table-grid" id="table-selector-seqsq"></div>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Paramètres</div>
+      <div class="config-item">
+        <span class="field-label">Temps par question (sec)</span>
+        <div class="range-wrap">
+          <input type="range" id="timer-sec-seqsq" min="0" max="60" value="0" oninput="updateVal('timer-sec-seqsq','val-timer-seqsq',true)">
+        </div>
+        <div style="text-align:center"><span class="range-val" id="val-timer-seqsq">&#8734;</span></div>
+      </div>
+    </div>
+    <button class="btn-primary" id="start-btn-seqsq" onclick="startSeqSquares()" disabled>Lancer ✦</button>
+  </div>
+
+  <!-- ═══════════ RÉVISER CONFIG ═══════════ -->
+  <div id="screen-reviser" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-train-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Mode Réviser</h1>
+      <p>A = ta table · B = un nombre entre 2 et ton max</p>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Choisir les tables à réviser</div>
+      <div class="select-controls">
+        <button class="mini-btn" onclick="selectRangeRev(1,10)">1 – 10</button>
+        <button class="mini-btn" onclick="selectRangeRev(1,20)">1 – 20</button>
+        <button class="mini-btn" onclick="selectRangeRev(1,50)">1 – 50</button>
+        <button class="mini-btn" onclick="selectRangeRev(1,100)">Toutes</button>
+        <button class="mini-btn" onclick="clearSelectionRev()">Effacer</button>
+      </div>
+      <span class="field-label">Sélectionne une ou plusieurs tables :</span>
+      <div class="table-grid" id="table-selector-rev"></div>
+    </div>
+    <div class="glass-card">
+      <div class="section-title">Paramètres</div>
+      <div class="config-row">
+        <div class="config-item">
+          <span class="field-label">Nombre de calculs</span>
+          <div class="range-wrap">
+            <input type="range" id="calc-count-rev" min="5" max="50" value="10" oninput="updateVal('calc-count-rev','val-calc-rev')">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-calc-rev">10</span></div>
+        </div>
+        <div class="config-item">
+          <span class="field-label">Temps par question (sec)</span>
+          <div class="range-wrap">
+            <input type="range" id="timer-sec-rev" min="0" max="60" value="0" oninput="updateVal('timer-sec-rev','val-timer-rev',true)">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-timer-rev">&#8734;</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" id="start-btn-rev" onclick="startReviser()" disabled>Lancer la révision ✦</button>
+  </div>
+
+  <!-- ═══════════ CONFIG ═══════════ -->
+  <div id="screen-config" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-train-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Configurer le quiz</h1>
+    </div>
+
+    <!-- Table selector -->
+    <div class="glass-card">
+      <div class="section-title">Choisir les tables</div>
+      <div class="select-controls">
+        <button class="mini-btn" onclick="selectRange(1,10)">1 – 10</button>
+        <button class="mini-btn" onclick="selectRange(1,20)">1 – 20</button>
+        <button class="mini-btn" onclick="selectRange(1,50)">1 – 50</button>
+        <button class="mini-btn" onclick="selectRange(1,100)">Toutes</button>
+        <button class="mini-btn" onclick="clearSelection()">Effacer</button>
+      </div>
+      <span class="field-label">Sélectionne une ou plusieurs tables :</span>
+      <div class="table-grid" id="table-selector"></div>
+    </div>
+
+    <!-- Config -->
+    <div class="glass-card">
+      <div class="section-title">Paramètres</div>
+      <div class="config-row">
+        <div class="config-item">
+          <span class="field-label">Nombre de calculs</span>
+          <div class="range-wrap">
+            <input type="range" id="calc-count" min="5" max="50" value="10" oninput="updateVal('calc-count','val-calc')">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-calc">10</span></div>
+        </div>
+        <div class="config-item">
+          <span class="field-label">Temps par question (sec)</span>
+          <div class="range-wrap">
+            <input type="range" id="timer-sec" min="0" max="60" value="0" oninput="updateVal('timer-sec','val-timer',true)">
+          </div>
+          <div style="text-align:center"><span class="range-val" id="val-timer">∞</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="start-btn" onclick="startQuiz()" disabled>Lancer le quiz ✦</button>
+  </div>
+
+  <!-- ═══════════ QUIZ ═══════════ -->
+  <div id="screen-quiz" class="screen">
+    <button class="btn-back" onclick="clearInterval(timerInterval); stopChrono(); showScreen(quizMode==='reviser' ? 'screen-reviser' : quizMode==='sequential' ? 'screen-sequential' : quizMode==='squares' ? 'screen-squares' : quizMode==='seq-squares' ? 'screen-seq-squares' : 'screen-config')">&#8592; Retour</button>
+    <div class="quiz-header">
+      <div class="quiz-stat"><span>Question</span><span id="q-num">1/10</span></div>
+      <div class="quiz-stat"><span>Score</span><span id="q-score">0</span></div>
+      <div class="quiz-stat"><span>Chrono</span><span id="q-chrono">0:00</span></div>
+      <div class="quiz-stat"><span>Temps</span><span id="q-timer">∞</span></div>
+      <div class="quiz-stat"><span>Streak</span><span id="q-streak">0 🔥</span></div>
+    </div>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%"></div></div>
+    <div class="progress-dots" id="progress-dots"></div>
+    <div class="glass-card question-card">
+      <div class="question-num" id="q-label">Question 1</div>
+      <div class="question-text" id="q-text">?? × ?? = ?</div>
+    </div>
+    <div class="answer-zone">
+      <input type="number" id="answer-input" placeholder="?" autocomplete="off" onkeydown="onKey(event)">
+      <button class="btn-validate" onclick="validate()">Valider</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- ═══════════ RESULTS ═══════════ -->
+  <div id="screen-results" class="screen">
+    <div class="hero" style="padding-top:0"><h1 style="font-size:2rem">Résultats</h1></div>
+    <div class="glass-card">
+      <div class="result-center">
+        <div class="score-circle">
+          <div class="big" id="res-score">0/0</div>
+          <div class="small">SCORE</div>
+        </div>
+        <div class="result-msg" id="res-msg">—</div>
+        <div class="result-sub" id="res-sub">—</div>
+        <div style="margin-top:.6rem;font-size:.95rem;color:var(--lavender);font-family:'Syne',sans-serif;font-weight:600" id="res-time"></div>
+      </div>
+      <div class="result-log" id="result-log"></div>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+      <button class="btn-primary" style="margin:0;flex:1;min-width:140px;max-width:220px" onclick="quizMode==='reviser' ? startReviser() : quizMode==='sequential' ? startSequential() : quizMode==='squares' ? startSquares() : quizMode==='seq-squares' ? startSeqSquares() : startQuiz()">Rejouer ✦</button>
+      <button class="btn-primary" style="margin:0;flex:1;min-width:140px;max-width:220px;background:linear-gradient(135deg,#3b82f6,#8b5cf6)" onclick="showScreen('screen-menu')">Menu</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ STATS ═══════════ -->
+  <div id="screen-stats" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Mes Statistiques</h1>
+      <p>Ton historique complet de progression</p>
+    </div>
+
+    <!-- Grandes cartes stats -->
+    <div class="stats-grid" id="stats-overview"></div>
+
+    <!-- Graphe barres par mode -->
+    <div class="glass-card" style="margin-bottom:1.5rem">
+      <div class="section-title">Performance par mode</div>
+      <div id="stats-by-mode"></div>
+    </div>
+
+    <!-- Historique des sessions -->
+    <div class="glass-card">
+      <div class="section-title">Historique des sessions</div>
+      <div class="sort-bar">
+        <span class="sort-label">Trier par :</span>
+        <button class="sort-btn sort-active" data-sort="recent"     onclick="renderHistory(_historyData,'recent')">🕐 Plus récent</button>
+        <button class="sort-btn" data-sort="oldest"    onclick="renderHistory(_historyData,'oldest')">🕰 Plus ancien</button>
+        <button class="sort-btn" data-sort="best-pct"  onclick="renderHistory(_historyData,'best-pct')">⭐ Meilleur %</button>
+        <button class="sort-btn" data-sort="worst-pct" onclick="renderHistory(_historyData,'worst-pct')">📉 Moins bon %</button>
+        <button class="sort-btn" data-sort="best-time" onclick="renderHistory(_historyData,'best-time')">⚡ Temps le + court</button>
+        <button class="sort-btn" data-sort="worst-time"onclick="renderHistory(_historyData,'worst-time')">🐢 Temps le + long</button>
+        <button class="sort-btn" data-sort="most-q"    onclick="renderHistory(_historyData,'most-q')">📈 + de questions</button>
+        <button class="sort-btn" data-sort="least-q"   onclick="renderHistory(_historyData,'least-q')">📉 - de questions</button>
+      </div>
+      <div id="stats-history" style="max-height:360px;overflow-y:auto;padding-right:.3rem"></div>
+    </div>
+
+    <button class="btn-primary" style="max-width:220px;margin-top:1.5rem;background:linear-gradient(135deg,#ef4444,#ec4899)" onclick="confirmReset()">🗑 Réinitialiser les stats</button>
+  </div>
+
+  <!-- ═══════════ TABLES SOUS-MENU ═══════════ -->
+  <div id="screen-tables" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-menu')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Tables & Carrés</h1>
+      <p>Consulte toutes les tables et les carrés avec les réponses</p>
+    </div>
+    <div class="menu-grid" style="max-width:600px;grid-template-columns:1fr 1fr">
+      <button class="menu-btn btn-tables" onclick="showScreen('screen-tables-mult')">
+        <span class="icon">📖</span>
+        Tables de multiplication
+        <span class="sub">Toutes les tables de 1 à 100</span>
+      </button>
+      <button class="menu-btn btn-squares" onclick="showScreen('screen-tables-squares')">
+        <span class="icon">🟣</span>
+        Nombres au carré
+        <span class="sub">Les carrés de 1² à 1000²</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ TABLES MULTIPLICATION VIEW ═══════════ -->
+  <div id="screen-tables-mult" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-tables')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Tables de Multiplication</h1>
+      <p>De 1 à 100 — avec les réponses</p>
+    </div>
+    <input class="tables-search" type="number" id="table-search" placeholder="Rechercher une table (ex: 7)" min="1" max="100" oninput="filterTable(this.value)">
+    <div class="tables-nav" id="tables-nav"></div>
+    <div class="tables-container" id="tables-container"></div>
+  </div>
+
+  <!-- ═══════════ TABLES CARRÉS VIEW ═══════════ -->
+  <div id="screen-tables-squares" class="screen">
+    <button class="btn-back" onclick="showScreen('screen-tables')">&#8592; Retour</button>
+    <div class="hero" style="padding-top:0">
+      <h1 style="font-size:2rem">Nombres au Carré</h1>
+      <p>De 1² à 1000² — avec les réponses</p>
+    </div>
+    <input class="tables-search" type="number" id="sq-search" placeholder="Rechercher un nombre (ex: 25)" min="1" max="1000" oninput="filterSquares(this.value)">
+    <div class="tables-nav" id="sq-nav"></div>
+    <div class="tables-container" id="sq-container"></div>
+  </div>
+
+</div>
+
+<script>
+/* ── STATE ── */
+let selectedTables = new Set();
+let selectedTablesRev = new Set();
+let questions = [];
+let currentQ = 0;
+let score = 0;
+let streak = 0;
+let timerMax = 0;
+let timerLeft = 0;
+let timerInterval = null;
+let chronoInterval = null;
+let chronoSeconds = 0;
+let log = [];
+let answered = false;
+let quizMode = 'config'; // 'config' | 'reviser'
+
+/* ── NAVIGATION ── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-tables-mult') buildTablesView();
+  if (id === 'screen-tables-squares') buildSquaresView();
+}
+
+/* ── RANGE VALUES ── */
+function updateVal(rangeId, valId, isTimer) {
+  const v = parseInt(document.getElementById(rangeId).value);
+  const el = document.getElementById(valId);
+  el.textContent = (isTimer && v === 0) ? '∞' : v;
+}
+
+/* ── TABLE SELECTOR BUILD ── */
+(function buildSelector() {
+  const grid = document.getElementById('table-selector');
+  for (let i = 1; i <= 100; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i;
+    btn.dataset.n = i;
+    btn.onclick = () => toggleTable(i, btn);
+    grid.appendChild(btn);
+  }
+})();
+
+function toggleTable(n, btn) {
+  if (selectedTables.has(n)) { selectedTables.delete(n); btn.classList.remove('selected'); }
+  else { selectedTables.add(n); btn.classList.add('selected'); }
+  document.getElementById('start-btn').disabled = selectedTables.size === 0;
+}
+
+function selectRange(a, b) {
+  clearSelection();
+  document.querySelectorAll('.tbl-btn').forEach(btn => {
+    const n = parseInt(btn.dataset.n);
+    if (n >= a && n <= b && n >= 1) { selectedTables.add(n); btn.classList.add('selected'); }
+  });
+  document.getElementById('start-btn').disabled = selectedTables.size === 0;
+}
+
+function clearSelection() {
+  selectedTables.clear();
+  document.querySelectorAll('.tbl-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('start-btn').disabled = true;
+}
+
+/* ── REVISER SELECTOR ── */
+(function buildSelectorRev() {
+  const grid = document.getElementById('table-selector-rev');
+  for (let i = 1; i <= 100; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i;
+    btn.dataset.n = i;
+    btn.onclick = () => toggleTableRev(i, btn);
+    grid.appendChild(btn);
+  }
+})();
+
+function toggleTableRev(n, btn) {
+  if (selectedTablesRev.has(n)) { selectedTablesRev.delete(n); btn.classList.remove('selected'); }
+  else { selectedTablesRev.add(n); btn.classList.add('selected'); }
+  document.getElementById('start-btn-rev').disabled = selectedTablesRev.size === 0;
+}
+
+function selectRangeRev(a, b) {
+  clearSelectionRev();
+  document.querySelectorAll('#table-selector-rev .tbl-btn').forEach(btn => {
+    const n = parseInt(btn.dataset.n);
+    if (n >= a && n <= b && n >= 1) { selectedTablesRev.add(n); btn.classList.add('selected'); }
+  });
+  document.getElementById('start-btn-rev').disabled = selectedTablesRev.size === 0;
+}
+
+function clearSelectionRev() {
+  selectedTablesRev.clear();
+  document.querySelectorAll('#table-selector-rev .tbl-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('start-btn-rev').disabled = true;
+}
+
+function startReviser() {
+  quizMode = 'reviser';
+  const count = parseInt(document.getElementById('calc-count-rev').value);
+  timerMax = parseInt(document.getElementById('timer-sec-rev').value);
+  const tables = [...selectedTablesRev].sort((x,y) => x - y);
+  const maxTable = tables[tables.length - 1];
+
+  questions = [];
+  for (let i = 0; i < count; i++) {
+    const a = tables[Math.floor(Math.random() * tables.length)];
+    // B = entre 2 et maxTable inclus
+    const b = Math.floor(Math.random() * (maxTable - 1)) + 2;
+    questions.push({ a, b, ans: a * b });
+  }
+  currentQ = 0; score = 0; streak = 0; log = [];
+  showScreen('screen-quiz');
+  buildDots();
+  startChrono();
+  showQuestion();
+}
+
+/* ── SEQUENTIAL MODE ── */
+let selectedTableSeq = null;
+
+(function buildSelectorSeq() {
+  const grid = document.getElementById('table-selector-seq');
+  for (let i = 1; i <= 100; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i;
+    btn.dataset.n = i;
+    btn.onclick = () => {
+      document.querySelectorAll('#table-selector-seq .tbl-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedTableSeq = i;
+      document.getElementById('start-btn-seq').disabled = false;
+    };
+    grid.appendChild(btn);
+  }
+})();
+
+function startSequential() {
+  quizMode = 'sequential';
+  timerMax = parseInt(document.getElementById('timer-sec-seq').value);
+  const maxB = parseInt(document.getElementById('seq-max').value);
+  const a = selectedTableSeq;
+
+  questions = [];
+  for (let b = 2; b <= maxB; b++) {
+    questions.push({ a, b, ans: a * b });
+  }
+  currentQ = 0; score = 0; streak = 0; log = [];
+  showScreen('screen-quiz');
+  buildDots();
+  startChrono();
+  showQuestion();
+}
+
+/* ── CARRÉ PAR CARRÉ MODE ── */
+let selectedSeqSq = null;
+
+(function buildSelectorSeqSq() {
+  const grid = document.getElementById('table-selector-seqsq');
+  for (let i = 1; i <= 100; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i;
+    btn.dataset.n = i;
+    btn.onclick = () => {
+      document.querySelectorAll('#table-selector-seqsq .tbl-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSeqSq = i;
+      document.getElementById('start-btn-seqsq').disabled = false;
+    };
+    grid.appendChild(btn);
+  }
+})();
+
+function startSeqSquares() {
+  quizMode = 'seq-squares';
+  timerMax = parseInt(document.getElementById('timer-sec-seqsq').value);
+  const maxN = selectedSeqSq;
+
+  questions = [];
+  for (let n = 1; n <= maxN; n++) {
+    questions.push({ a: n, b: null, ans: n * n, isSquare: true });
+  }
+  currentQ = 0; score = 0; streak = 0; log = [];
+  showScreen('screen-quiz');
+  buildDots();
+  startChrono();
+  showQuestion();
+}
+
+/* ── CARRÉS MODE ── */
+let selectedSquares = new Set();
+
+(function buildSelectorSq() {
+  const grid = document.getElementById('table-selector-sq');
+  for (let i = 1; i <= 100; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i;
+    btn.dataset.n = i;
+    btn.onclick = () => toggleSq(i, btn);
+    grid.appendChild(btn);
+  }
+})();
+
+function toggleSq(n, btn) {
+  if (selectedSquares.has(n)) { selectedSquares.delete(n); btn.classList.remove('selected'); }
+  else { selectedSquares.add(n); btn.classList.add('selected'); }
+  document.getElementById('start-btn-sq').disabled = selectedSquares.size === 0;
+}
+
+function selectRangeSq(a, b) {
+  clearSelectionSq();
+  document.querySelectorAll('#table-selector-sq .tbl-btn').forEach(btn => {
+    const n = parseInt(btn.dataset.n);
+    if (n >= a && n <= b) { selectedSquares.add(n); btn.classList.add('selected'); }
+  });
+  document.getElementById('start-btn-sq').disabled = selectedSquares.size === 0;
+}
+
+function clearSelectionSq() {
+  selectedSquares.clear();
+  document.querySelectorAll('#table-selector-sq .tbl-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('start-btn-sq').disabled = true;
+}
+
+function startSquares() {
+  quizMode = 'squares';
+  const count = parseInt(document.getElementById('calc-count-sq').value);
+  timerMax = parseInt(document.getElementById('timer-sec-sq').value);
+  const nums = [...selectedSquares];
+
+  questions = [];
+  for (let i = 0; i < count; i++) {
+    const a = nums[Math.floor(Math.random() * nums.length)];
+    // On affiche "a²" et la réponse est a*a
+    questions.push({ a, b: null, ans: a * a, isSquare: true });
+  }
+  currentQ = 0; score = 0; streak = 0; log = [];
+  showScreen('screen-quiz');
+  buildDots();
+  startChrono();
+  showQuestion();
+}
+
+/* ── QUIZ GENERATION ── */
+function startQuiz() {
+  quizMode = 'config';
+  const count = parseInt(document.getElementById('calc-count').value);
+  timerMax = parseInt(document.getElementById('timer-sec').value);
+  const tables = [...selectedTables];
+
+  questions = [];
+  for (let i = 0; i < count; i++) {
+    const a = tables[Math.floor(Math.random() * tables.length)];
+    const b = tables[Math.floor(Math.random() * tables.length)];
+    questions.push({ a, b, ans: a * b });
+  }
+  currentQ = 0; score = 0; streak = 0; log = [];
+  showScreen('screen-quiz');
+  buildDots();
+  startChrono();
+  showQuestion();
+}
+
+/* ── CHRONO ── */
+function startChrono() {
+  clearInterval(chronoInterval);
+  chronoSeconds = 0;
+  document.getElementById('q-chrono').textContent = '0:00';
+  chronoInterval = setInterval(() => {
+    chronoSeconds++;
+    const m = Math.floor(chronoSeconds / 60);
+    const s = String(chronoSeconds % 60).padStart(2, '0');
+    document.getElementById('q-chrono').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function stopChrono() {
+  clearInterval(chronoInterval);
+}
+
+function buildDots() {
+  const d = document.getElementById('progress-dots');
+  d.innerHTML = '';
+  questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' current' : '');
+    dot.id = `dot-${i}`;
+    d.appendChild(dot);
+  });
+}
+
+function showQuestion() {
+  clearInterval(timerInterval);
+  answered = false;
+  const q = questions[currentQ];
+  const inp = document.getElementById('answer-input');
+  inp.value = '';
+  inp.className = '';
+  inp.disabled = false;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('q-label').textContent = `Question ${currentQ + 1}`;
+  document.getElementById('q-text').textContent = q.isSquare ? `${q.a}² = ?` : `${q.a} × ${q.b} = ?`;
+  document.getElementById('q-num').textContent = `${currentQ + 1}/${questions.length}`;
+  document.getElementById('q-score').textContent = score;
+  document.getElementById('q-streak').textContent = `${streak} 🔥`;
+
+  // timer
+  const bar = document.getElementById('timer-bar');
+  if (timerMax > 0) {
+    timerLeft = timerMax;
+    document.getElementById('q-timer').textContent = timerLeft + 's';
+    bar.style.width = '100%';
+    bar.style.background = 'linear-gradient(90deg,#3b82f6,#7c3aed,#ec4899)';
+    timerInterval = setInterval(() => {
+      timerLeft--;
+      document.getElementById('q-timer').textContent = timerLeft + 's';
+      bar.style.width = (timerLeft / timerMax * 100) + '%';
+      if (timerLeft <= 0) { clearInterval(timerInterval); timeOut(); }
+    }, 1000);
+  } else {
+    document.getElementById('q-timer').textContent = '∞';
+    bar.style.width = '100%';
+  }
+
+  setTimeout(() => inp.focus(), 100);
+}
+
+function timeOut() {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const inp = document.getElementById('answer-input');
+  inp.disabled = true;
+  showFeedback(false, q.ans, true);
+  log.push({ q, userAns: '—', ok: false });
+  streak = 0;
+  markDot(false);
+  setTimeout(nextQuestion, 469);
+}
+
+function onKey(e) { if (e.key === 'Enter') validate(); }
+
+function validate() {
+  if (answered) return;
+  const inp = document.getElementById('answer-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val)) return;
+  answered = true;
+  clearInterval(timerInterval);
+  inp.disabled = true;
+  const q = questions[currentQ];
+  const ok = val === q.ans;
+  if (ok) { score++; streak++; } else { streak = 0; }
+  document.getElementById('q-score').textContent = score;
+  document.getElementById('q-streak').textContent = `${streak} 🔥`;
+  log.push({ q, userAns: val, ok });
+  showFeedback(ok, q.ans, false);
+  markDot(ok);
+  setTimeout(nextQuestion, ok ? 281 : 438);
+}
+
+function showFeedback(ok, ans, timeout) {
+  const fb = document.getElementById('feedback');
+  const inp = document.getElementById('answer-input');
+  if (ok) {
+    fb.textContent = '✓ Bravo !';
+    fb.className = 'feedback ok';
+    inp.className = 'correct';
+  } else {
+    fb.textContent = timeout ? `⏱ Temps écoulé — réponse : ${ans}` : `✗ La réponse était ${ans}`;
+    fb.className = 'feedback bad';
+    inp.className = 'wrong';
+  }
+}
+
+function markDot(ok) {
+  const dot = document.getElementById(`dot-${currentQ}`);
+  if (dot) { dot.classList.remove('current'); dot.classList.add(ok ? 'done-ok' : 'done-bad'); }
+  const next = document.getElementById(`dot-${currentQ + 1}`);
+  if (next) next.classList.add('current');
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) { showResults(); return; }
+  showQuestion();
+}
+
+/* ── RESULTS ── */
+async function showResults() {
+  stopChrono();
+  await recordSession();
+  showScreen('screen-results');
+  const pct = Math.round(score / questions.length * 100);
+  const m = Math.floor(chronoSeconds / 60);
+  const s = String(chronoSeconds % 60).padStart(2, '0');
+  document.getElementById('res-score').textContent = `${score}/${questions.length}`;
+  document.getElementById('res-time').textContent = `⏱ Terminé en ${m}:${s}`;
+
+  let msg, sub;
+  if (pct === 100) { msg = '🏆 Parfait !'; sub = 'Tu maîtrises toutes ces tables !'; }
+  else if (pct >= 80) { msg = '⭐ Excellent !'; sub = 'Encore un petit effort pour la perfection !'; }
+  else if (pct >= 60) { msg = '👍 Bien joué !'; sub = 'Continue de t\'entraîner !'; }
+  else if (pct >= 40) { msg = '💪 Continue !'; sub = 'La pratique fait la perfection.'; }
+  else { msg = '📚 À réviser !'; sub = 'Consulte les tables et réessaie !'; }
+
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('res-sub').textContent = sub;
+
+  const rl = document.getElementById('result-log');
+  rl.innerHTML = log.map(l =>
+    `<div class="log-item ${l.ok ? 'ok2' : 'bad2'}">
+      <span>${l.q.a} × ${l.q.b} = <strong>${l.q.ans}</strong></span>
+      <span style="display:flex;align-items:center;gap:.6rem">
+        ${!l.ok ? `<span style="color:rgba(248,244,255,.4);font-size:.8rem">Tu as mis : ${l.userAns}</span>` : ''}
+        <span class="log-check">${l.ok ? '✅' : '❌'}</span>
+      </span>
+    </div>`
+  ).join('');
+}
+
+/* ── TABLES VIEW ── */
+function buildTablesView(filter) {
+  const container = document.getElementById('tables-container');
+  const nav = document.getElementById('tables-nav');
+  container.innerHTML = '';
+  nav.innerHTML = '';
+
+  const rangeLabels = ['1–9','10–19','20–29','30–39','40–49','50–59','60–69','70–79','80–89','90–100'];
+  rangeLabels.forEach((lbl, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.textContent = lbl;
+    btn.onclick = () => scrollToTable(i === 0 ? 1 : i * 10);
+    nav.appendChild(btn);
+  });
+
+  const show = filter !== undefined && filter !== '' ? [parseInt(filter)] :
+    Array.from({length: 100}, (_, i) => i + 1);
+
+  let hasResult = false;
+  show.forEach(n => {
+    if (isNaN(n) || n < 1 || n > 100) return;
+    hasResult = true;
+
+    const sec = document.createElement('div');
+    sec.className = 'table-section';
+    sec.id = `tsec-${n}`;
+
+    // Header cliquable
+    const header = document.createElement('div');
+    header.className = 'accordion-header';
+    // Auto-ouvrir si filtre actif (1 seul résultat)
+    if (show.length === 1) header.classList.add('open');
+    header.innerHTML = `
+      <span class="acc-dot"></span>
+      <span class="acc-label">Table de ${n}</span>
+      <span class="acc-badge">× 1 à 100</span>
+      <span class="acc-arrow">▼</span>
+    `;
+
+    // Corps déroulant
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
+    if (show.length === 1) body.classList.add('open');
+
+    const grid = document.createElement('div');
+    grid.className = 'mult-grid';
+    for (let k = 1; k <= 100; k++) {
+      const item = document.createElement('div');
+      item.className = 'mult-item';
+      item.innerHTML = `<span class="op">${n} × ${k}</span><span class="res">= ${n * k}</span>`;
+      grid.appendChild(item);
+    }
+    body.appendChild(grid);
+
+    header.addEventListener('click', () => {
+      const isOpen = header.classList.contains('open');
+      header.classList.toggle('open', !isOpen);
+      body.classList.toggle('open', !isOpen);
+    });
+
+    sec.appendChild(header);
+    sec.appendChild(body);
+    container.appendChild(sec);
+  });
+
+  if (!hasResult) {
+    container.innerHTML = '<div class="no-select-msg">Aucune table trouvée.</div>';
+  }
+}
+
+function filterTable(val) { buildTablesView(val); }
+
+function scrollToTable(n) {
+  const el = document.getElementById(`tsec-${n}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── SQUARES VIEW ── */
+function buildSquaresView(filter) {
+  const container = document.getElementById('sq-container');
+  const nav = document.getElementById('sq-nav');
+  container.innerHTML = '';
+  nav.innerHTML = '';
+
+  // Nav par centaines
+  const ranges = ['1–99','100–199','200–299','300–399','400–499','500–599','600–699','700–799','800–899','900–1000'];
+  ranges.forEach((lbl, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.textContent = lbl;
+    btn.onclick = () => {
+      const el = document.getElementById(`sqsec-${i === 0 ? 1 : i * 100}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    nav.appendChild(btn);
+  });
+
+  // Groupes de 10 en accordéon
+  const show = filter !== undefined && filter !== '' ? [parseInt(filter)] : null;
+
+  if (show) {
+    // Affichage d'un seul nombre
+    const n = show[0];
+    if (isNaN(n) || n < 1 || n > 1000) {
+      container.innerHTML = '<div class="no-stats">Nombre introuvable.</div>';
+      return;
+    }
+    const sec = document.createElement('div');
+    sec.className = 'table-section';
+    const header = document.createElement('div');
+    header.className = 'accordion-header open';
+    header.innerHTML = `<span class="acc-dot"></span><span class="acc-label">${n}² = ${n*n}</span><span class="acc-arrow">▼</span>`;
+    const body = document.createElement('div');
+    body.className = 'accordion-body open';
+    const grid = document.createElement('div');
+    grid.className = 'mult-grid';
+    const item = document.createElement('div');
+    item.className = 'mult-item';
+    item.innerHTML = `<span class="op">${n} × ${n}</span><span class="res">= ${n*n}</span>`;
+    grid.appendChild(item);
+    body.appendChild(grid);
+    header.addEventListener('click', () => {
+      header.classList.toggle('open');
+      body.classList.toggle('open');
+    });
+    sec.appendChild(header); sec.appendChild(body);
+    container.appendChild(sec);
+    return;
+  }
+
+  // Groupes de 50 en accordéon
+  for (let start = 1; start <= 1000; start += 50) {
+    const end = Math.min(start + 49, 1000);
+    const sec = document.createElement('div');
+    sec.className = 'table-section';
+    sec.id = `sqsec-${start}`;
+
+    const header = document.createElement('div');
+    header.className = 'accordion-header';
+    header.innerHTML = `
+      <span class="acc-dot"></span>
+      <span class="acc-label">${start}² à ${end}²</span>
+      <span class="acc-badge">${end - start + 1} nombres</span>
+      <span class="acc-arrow">▼</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
+
+    const grid = document.createElement('div');
+    grid.className = 'mult-grid';
+    for (let n = start; n <= end; n++) {
+      const item = document.createElement('div');
+      item.className = 'mult-item';
+      item.innerHTML = `<span class="op">${n}²</span><span class="res">= ${n*n}</span>`;
+      grid.appendChild(item);
+    }
+    body.appendChild(grid);
+
+    header.addEventListener('click', () => {
+      header.classList.toggle('open');
+      body.classList.toggle('open');
+    });
+
+    sec.appendChild(header);
+    sec.appendChild(body);
+    container.appendChild(sec);
+  }
+}
+
+function filterSquares(val) { buildSquaresView(val); }
+
+/* ══════════════════════════════════
+   SYSTÈME DE STATISTIQUES
+══════════════════════════════════ */
+
+const STATS_KEY = 'quiz-stats-v1';
+
+async function loadStats() {
+  try {
+    const val = localStorage.getItem(STATS_KEY);
+    return val ? JSON.parse(val) : defaultStats();
+  } catch { return defaultStats(); }
+}
+
+async function saveStats(data) {
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(data)); } catch {}
+}
+
+function defaultStats() {
+  return {
+    totalQuestions: 0,
+    totalCorrect: 0,
+    totalSeconds: 0,
+    totalSessions: 0,
+    bestPct: 0,
+    bestTime: null,  // meilleur temps (secondes) pour 100%
+    byMode: {
+      config:     { sessions:0, questions:0, correct:0 },
+      reviser:    { sessions:0, questions:0, correct:0 },
+      sequential: { sessions:0, questions:0, correct:0 },
+      squares:      { sessions:0, questions:0, correct:0 },
+      'seq-squares': { sessions:0, questions:0, correct:0 }
+    },
+    history: []  // 50 dernières sessions max
+  };
+}
+
+async function recordSession() {
+  const data = await loadStats();
+  const pct = Math.round(score / questions.length * 100);
+
+  data.totalQuestions += questions.length;
+  data.totalCorrect   += score;
+  data.totalSeconds   += chronoSeconds;
+  data.totalSessions  += 1;
+  if (pct > data.bestPct) data.bestPct = pct;
+  if (pct === 100 && (data.bestTime === null || chronoSeconds < data.bestTime))
+    data.bestTime = chronoSeconds;
+
+  const mode = quizMode;
+  if (!data.byMode[mode]) data.byMode[mode] = { sessions:0, questions:0, correct:0 };
+  data.byMode[mode].sessions++;
+  data.byMode[mode].questions += questions.length;
+  data.byMode[mode].correct   += score;
+
+  const m = Math.floor(chronoSeconds/60);
+  const s = String(chronoSeconds%60).padStart(2,'0');
+  const modeLabel = { config:'Quiz', reviser:'Réviser', sequential:'Table/Table', squares:'Carrés', 'seq-squares':'Carré/Carré' }[mode] || mode;
+  data.history.unshift({
+    mode: modeLabel,
+    score,
+    total: questions.length,
+    pct,
+    time: `${m}:${s}`,
+    timeSeconds: chronoSeconds,
+    date: new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
+  });
+  if (data.history.length > 1000) data.history = data.history.slice(0, 1000);
+
+  await saveStats(data);
+}
+
+async function showStatsScreen() {
+  showScreen('screen-stats');
+  const data = await loadStats();
+  renderStats(data);
+}
+
+function fmtTime(secs) {
+  if (!secs && secs !== 0) return '—';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}h${String(m).padStart(2,'0')}`;
+  return `${m}m${String(s).padStart(2,'0')}s`;
+}
+
+function renderStats(data) {
+  _historyData = data.history || [];
+  const totalPct = data.totalQuestions > 0
+    ? Math.round(data.totalCorrect / data.totalQuestions * 100) : 0;
+  const ratio = data.totalQuestions > 0
+    ? `${data.totalCorrect}/${data.totalQuestions}` : '0/0';
+
+  // ── Grandes cartes ──
+  document.getElementById('stats-overview').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon">🎮</div>
+      <div class="stat-val">${data.totalSessions}</div>
+      <div class="stat-lbl">Sessions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">❓</div>
+      <div class="stat-val">${data.totalQuestions}</div>
+      <div class="stat-lbl">Questions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-val">${data.totalCorrect}</div>
+      <div class="stat-lbl">Bonnes réponses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">❌</div>
+      <div class="stat-val">${data.totalQuestions - data.totalCorrect}</div>
+      <div class="stat-lbl">Mauvaises réponses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-val">${totalPct}%</div>
+      <div class="stat-lbl">Taux de réussite</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚖️</div>
+      <div class="stat-val" style="font-size:1.3rem">${ratio}</div>
+      <div class="stat-lbl">Ratio</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏱️</div>
+      <div class="stat-val" style="font-size:1.4rem">${fmtTime(data.totalSeconds)}</div>
+      <div class="stat-lbl">Temps total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-val">${data.bestPct}%</div>
+      <div class="stat-lbl">Meilleur score</div>
+    </div>
+    ${data.bestTime !== null ? `
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-val" style="font-size:1.4rem">${fmtTime(data.bestTime)}</div>
+      <div class="stat-lbl">Meilleur 100%</div>
+    </div>` : ''}
+  `;
+
+  // ── Par mode ──
+  const modeColors = {
+    config:     'linear-gradient(90deg,#7c3aed,#ec4899)',
+    reviser:    'linear-gradient(90deg,#0ea5e9,#6366f1)',
+    sequential: 'linear-gradient(90deg,#10b981,#3b82f6)',
+    squares:        'linear-gradient(90deg,#f59e0b,#ef4444)',
+    'seq-squares':  'linear-gradient(90deg,#ef4444,#10b981)'
+  };
+  const modeNames = { config:'Quiz libre', reviser:'Réviser', sequential:'Table par table', squares:'Carrés', 'seq-squares':'Carré par carré' };
+  const modeEl = document.getElementById('stats-by-mode');
+
+  const modesHtml = Object.entries(data.byMode).map(([key, m]) => {
+    const p = m.questions > 0 ? Math.round(m.correct / m.questions * 100) : 0;
+    return `
+      <div class="mode-bar-item">
+        <div class="mode-bar-label">
+          <span>${modeNames[key]} — ${m.sessions} session${m.sessions>1?'s':''} · ${m.correct}/${m.questions}</span>
+          <span style="color:var(--lavender);font-weight:700">${p}%</span>
+        </div>
+        <div class="mode-bar-track">
+          <div class="mode-bar-fill" style="width:${p}%;background:${modeColors[key]}"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  modeEl.innerHTML = `<div class="mode-bar-row">${modesHtml || '<div class="no-stats">Aucune session enregistrée</div>'}</div>`;
+
+  // ── Historique ──
+  renderHistory(data.history, 'recent');
+}
+
+let _historyData = [];
+
+function renderHistory(history, sortKey) {
+  const histEl = document.getElementById('stats-history');
+
+  // Mettre à jour le bouton actif
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    b.classList.toggle('sort-active', b.dataset.sort === sortKey);
+  });
+
+  if (!history.length) {
+    histEl.innerHTML = '<div class="no-stats">Aucune session enregistrée pour l\'instant.<br>Lance ton premier quiz !</div>';
+    return;
+  }
+
+  // Copie pour tri sans modifier l'original
+  let sorted = [...history];
+  switch(sortKey) {
+    case 'recent':    /* déjà en ordre chronologique inverse */ break;
+    case 'oldest':    sorted.reverse(); break;
+    case 'best-pct':  sorted.sort((a,b) => b.pct - a.pct); break;
+    case 'worst-pct': sorted.sort((a,b) => a.pct - b.pct); break;
+    case 'best-time': sorted.sort((a,b) => (a.timeSeconds??9999) - (b.timeSeconds??9999)); break;
+    case 'worst-time':sorted.sort((a,b) => (b.timeSeconds??0) - (a.timeSeconds??0)); break;
+    case 'most-q':    sorted.sort((a,b) => b.total - a.total); break;
+    case 'least-q':   sorted.sort((a,b) => a.total - b.total); break;
+  }
+
+  histEl.innerHTML = sorted.map((h) => {
+    const cls = h.pct >= 80 ? 'good' : h.pct >= 50 ? 'mid' : 'bad';
+    return `
+      <div class="history-item">
+        <span class="h-mode">${h.mode}</span>
+        <span class="h-score">${h.score}/${h.total}</span>
+        <span class="h-pct ${cls}">${h.pct}%</span>
+        <span class="h-time">⏱ ${h.time}</span>
+        <span class="h-time">${h.date}</span>
+      </div>`;
+  }).join('');
+}
+
+async function confirmReset() {
+  if (confirm('Réinitialiser toutes les statistiques ? Cette action est irréversible.')) {
+    try { localStorage.removeItem(STATS_KEY); } catch {}
+    renderStats(defaultStats());
+  }
+}
+</script>
+</body>
+</html>
